@@ -1,0 +1,33 @@
+name: 'Create Prisma Postgres Database'
+description: 'Creates a Prisma Postgres database and returns connection string'
+author: 'Prisma'
+branding:
+  icon: 'database'
+  color: 'blue'
+
+inputs:
+  service_token:
+    description: 'Prisma Postgres service token'
+    required: true
+  project_id:
+    description: 'Prisma project ID'
+    required: true
+  database_name:
+    description: 'Database name'
+    required: false
+  region:
+    description: 'Database region'
+    required: false
+    default: 'us-east-1'
+
+outputs:
+  database_id:
+    description: 'The ID of the created/existing database'
+  database_name:
+    description: 'The name of the database'
+  database_url:
+    description: 'The DATABASE_URL for the database'
+
+runs:
+  using: 'node20'
+  main: 'index.js'
