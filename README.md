@@ -33,19 +33,22 @@ A GitHub Action to create Prisma Postgres databases in your CI/CD workflows.
     database_name: "my-test-db"
 ```
 
-### Complete Example for Pull Requests
+### Complete Example to Provision Prisma Postgres when PR is opened and delete when PR is closed
 
 ```yaml
-name: PR Database Testing
+name: Prisma Postgres Database Lifecycle
 on:
   pull_request:
-    types: [opened, reopened, synchronize]
+    types: [opened, reopened, synchronize, closed]
 
 jobs:
-  test:
+  create-database:
+    name: Create Database
+    if: github.event.action != 'closed'
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
       - name: Create Database
         id: create
@@ -53,18 +56,38 @@ jobs:
         with:
           service_token: ${{ secrets.PRISMA_POSTGRES_SERVICE_TOKEN }}
           project_id: ${{ secrets.PRISMA_PROJECT_ID }}
+          database_name: "pr-${{ github.event.pull_request.number }}"
 
-      - name: Setup Database Schema
-        env:
-          DATABASE_URL: ${{ steps.create.outputs.database_url }}
+      - name: Verify database creation
         run: |
-          npx prisma generate
-          npx prisma db push
+          echo "✅ Database created successfully!"
+          echo "Database ID: ${{ steps.create.outputs.database_id }}"
+          echo "Database Name: ${{ steps.create.outputs.database_name }}"
+          echo "Database URL is available in steps.create.outputs.database_url"
 
-      - name: Run Tests
-        env:
-          DATABASE_URL: ${{ steps.create.outputs.database_url }}
-        run: npm test
+  cleanup-database:
+    name: Cleanup Database  
+    if: always() && github.event.action == 'closed'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Delete Database
+        id: delete
+        uses: prisma/delete-prisma-postgres-database-action@v1
+        with:
+          service_token: ${{ secrets.PRISMA_POSTGRES_SERVICE_TOKEN }}
+          project_id: ${{ secrets.PRISMA_PROJECT_ID }}
+          database_name: "pr-${{ github.event.pull_request.number }}"
+
+      - name: Verify database deletion
+        run: |
+          if [ "${{ steps.delete.outputs.deleted }}" == "true" ]; then
+            echo "✅ Database ${{ steps.delete.outputs.database_name }} was deleted"
+          else
+            echo "ℹ️ No database found to delete"
+          fi
 ```
 
 ## Inputs
