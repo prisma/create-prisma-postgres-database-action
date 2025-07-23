@@ -1,5 +1,5 @@
 name: 'Create Prisma Postgres Database'
-description: 'Creates a Prisma Postgres database and returns connection string'
+description: 'Create a Prisma Postgres database and return the connection string'
 author: 'Prisma'
 branding:
   icon: 'database'
