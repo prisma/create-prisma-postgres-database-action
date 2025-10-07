@@ -18,7 +18,7 @@ inputs:
   region:
     description: 'Database region'
     required: false
-    default: 'us-east-1'
+    default: 'us-west-1'
 
 outputs:
   database_id:
