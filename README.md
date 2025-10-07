@@ -97,7 +97,7 @@ jobs:
 | `service_token` | Prisma Postgres service token | ✅       |                |
 | `project_id`    | Prisma project ID             | ✅       |                |
 | `database_name` | Database name                 | ❌       | Auto-generated |
-| `region`        | Database region               | ❌       | `us-east-1`    |
+| `region`        | Database region               | ❌       | `us-west-1`    |
 
 ## Outputs
 
@@ -122,7 +122,7 @@ To avoid conflicts with your development databases, create a dedicated project s
 curl -X POST https://api.prisma.io/v1/projects \
   -H "Authorization: Bearer $PRISMA_POSTGRES_SERVICE_TOKEN" \
   -H "Content-Type: application/json" \
-  -d "{\"region\": \"us-east-1\", \"name\": \"$PROJECT_NAME\"}"
+  -d "{\"region\": \"us-west-1\", \"name\": \"$PROJECT_NAME\"}"
 ```
 
 Note the project ID from the response.
