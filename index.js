@@ -90,7 +90,8 @@ async function createDatabase(serviceToken, projectId, dbName, region) {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${serviceToken}`,
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'User-Agent': 'prisma-postgres-github-action'
       },
       body: JSON.stringify({
         name: dbName,
